@@ -893,7 +893,7 @@ function drawUploadedImage(editor) {
  * @param editor {EasyMDE} The EasyMDE object
  * @param url {string} The url of the uploaded image
  */
-function afterImageUploaded(editor, url) {
+function afterImageUploaded(editor, url, data) {
     var cm = editor.codemirror;
     var stat = getState(cm);
     var options = editor.options;
@@ -901,7 +901,7 @@ function afterImageUploaded(editor, url) {
     var ext = imageName.substring(imageName.lastIndexOf('.') + 1).replace(/\?.*$/, '').toLowerCase();
 
     // Check if media is an image
-    if (['png', 'jpg', 'jpeg', 'gif', 'svg'].includes(ext)) {
+    if (['png', 'jpg', 'jpeg', 'gif', 'svg'].includes(ext) || (data.isImage)) {
         _replaceSelection(cm, stat.image, options.insertTexts.uploadedImage, url);
     } else {
         var text_link = options.insertTexts.link;
@@ -2354,8 +2354,8 @@ EasyMDE.prototype.openBrowseFileWindow = function (onSuccess, onError) {
  */
 EasyMDE.prototype.uploadImage = function (file, onSuccess, onError) {
     var self = this;
-    onSuccess = onSuccess || function onSuccess(imageUrl) {
-        afterImageUploaded(self, imageUrl);
+    onSuccess = onSuccess || function onSuccess(imageUrl, data) {
+        afterImageUploaded(self, imageUrl, data);
     };
 
     function onErrorSup(errorMessage) {
@@ -2412,7 +2412,7 @@ EasyMDE.prototype.uploadImage = function (file, onSuccess, onError) {
             return;
         }
         if (this.status === 200 && response && !response.error && response.data && response.data.filePath) {
-            onSuccess((self.options.imagePathAbsolute ? '' : (window.location.origin + '/')) + response.data.filePath);
+            onSuccess((self.options.imagePathAbsolute ? '' : (window.location.origin + '/')) + response.data.filePath, response.data);
         } else {
             if (response.error && response.error in self.options.errorMessages) {  // preformatted error message
                 onErrorSup(fillErrorMessage(self.options.errorMessages[response.error]));
