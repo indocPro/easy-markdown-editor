@@ -22,7 +22,7 @@
         "@types/codemirror": "^5.60.4",
         "@types/marked": "^4.0.1",
         "codemirror": "^5.63.1",
-        "codemirror-spell-checker": "1.1.2",
+        "codemirror-spell-checker": "https://github.com/indocPro/codemirror-spell-checker#master",
         "marked": "^4.0.10"
     },
     "devDependencies": {
